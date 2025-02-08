@@ -1,8 +1,8 @@
 ;***********************************************************
 ;*	This is the skeleton file for Lab 4 of ECE 375
 ;*
-;*	 Author: Enter your name
-;*	   Date: Enter Date
+;*	 Author: Darren Mai and Joseph Serra
+;*	   Date: 2/7/2025
 ;*
 ;***********************************************************
 
@@ -98,11 +98,25 @@ ADD16:
 		ldi		XH, high(ADD16_OP1)	; Load high byte of address
 
 		; Load beginning address of second operand into Y
+		ldi     YL, low(ADD16_OP2)
+		ldi     YH, high(ADD16_OP2)
 
 		; Load beginning address of result into Z
+		ldi     ZL, low(ADD16_Result)
+		ldi     ZH, high(ADD16_Result)
 
 		; Execute the function
-
+		ld R16, X+
+		ld R17, Y+
+		add R17, R16 ; add lower bytes
+		st Z+, R17 ; stores lower
+		ld R16, X
+		ld R17, Y
+		adc R17, R16;add upper bytes
+		st Z+, R17 ; store upper bytes
+		brcc EXIT
+		st Z, XH
+		EXIT
 		ret						; End a function with RET
 
 ;-----------------------------------------------------------
@@ -111,9 +125,30 @@ ADD16:
 ;       result. Always subtracts from the bigger values.
 ;-----------------------------------------------------------
 SUB16:
-		; Execute the function here
+		; Load beginning address of first operand into X
+		ldi		XL, low(SUB16_OP1)	; Load low byte of address
+		ldi		XH, high(SUB16_OP1)	; Load high byte of address
 
+		; Load beginning address of second operand into Y
+		ldi     YL, low(SUB16_OP2)
+		ldi     YH, high(SUB16_OP2)
 
+		; Load beginning address of result into Z
+		ldi     ZL, low(SUB16_Result)
+		ldi     ZH, high(SUB16_Result)
+
+		; Execute the function
+		ld R16, X+
+		ld R17, Y+
+		sub R17, R16 ;lower
+		st Z+, R17 ;stores lower
+		ld R16, X
+		ld R17, Y
+		sbc R17, R16;add upper bytes
+		st Z+, R17
+		brcc EXIT
+		st Z, XH
+		EXIT 
 		ret						; End a function with RET
 
 ;-----------------------------------------------------------
@@ -302,6 +337,29 @@ ADD16_OP2:
 .org	$0120				; data memory allocation for results
 ADD16_Result:
 		.byte 3				; allocate three bytes for ADD16 result
+
+
+; data memory allocation for SUB16
+.org    $0130
+SUB16_OP1:
+        .byte 2   ; Allocate two bytes for the first operand of SUB16
+SUB16_OP2:
+        .byte 2   ; Allocate two bytes for the second operand of SUB16
+
+.org    $0140
+SUB16_Result:
+        .byte 2   ; Allocate two bytes for the SUB16 result
+
+; data memory allocation for MUL24
+;.org    $0150
+;MUL24_OP1:
+        ;.byte 
+;MUL24_OP2:
+        ;.byte 
+
+;.org    $0160
+;MUL24_Result:
+        ;.byte 6   
 
 ;***********************************************************
 ;*	Additional Program Includes
