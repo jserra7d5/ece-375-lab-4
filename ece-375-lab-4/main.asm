@@ -41,6 +41,10 @@
 INIT:							; The initialization routine
 
 		; Initialize Stack Pointer
+    ldi r16, high(RAMEND)  ; Load high byte of RAMEND
+    out SPH, r16           ; Set high byte of stack pointer
+    ldi r16, low(RAMEND)   ; Load low byte of RAMEND
+    out SPL, r16           ; Set low byte of stack pointer
 
 		; TODO
 
@@ -54,9 +58,11 @@ INIT:							; The initialization routine
 MAIN:							; The Main program
 
 		; Call function to load ADD16 operands
+		rcall	LOAD_ADD16_OPERANDS
 		nop ; Check load ADD16 operands (Set Break point here #1)
 
 		; Call ADD16 function to display its results (calculate FCBA + FFFF)
+		rcall	ADD16
 		nop ; Check ADD16 result (Set Break point here #2)
 
 
@@ -86,6 +92,62 @@ DONE:	rjmp	DONE			; Create an infinite while loop to signify the
 ;*	Functions and Subroutines
 ;***********************************************************
 
+
+;-----------------------------------------------------------
+; Func: LOAD_ADD16_OPERANDS
+; Desc: Loads the operands for ADD16 into memory
+;-----------------------------------------------------------
+LOAD_ADD16_OPERANDS:
+		ldi		XL, low(OperandA)	; Load address of OperandA
+		ldi		XH, high(OperandA)
+		ldi		YL, low(OperandB)	; Load address of OperandB
+		ldi		YH, high(OperandB)
+		ldi		ZL, low(ADD16_OP1)	; Destination for operand 1
+		ldi		ZH, high(ADD16_OP1)
+
+		ld		R16, X+				; Load first byte of OperandA
+		st		Z+, R16
+		ld		R16, X				; Load second byte of OperandA
+		st		Z, R16
+
+		ldi		ZL, low(ADD16_OP2)	; Destination for operand 2
+		ldi		ZH, high(ADD16_OP2)
+
+		ld		R16, Y+				; Load first byte of OperandB
+		st		Z+, R16
+		ld		R16, Y				; Load second byte of OperandB
+		st		Z, R16
+
+		ret
+
+;-----------------------------------------------------------
+; Func: LOAD_SUB16_OPERANDS
+; Desc: Loads the operands for SUB16 into memory
+;-----------------------------------------------------------
+LOAD_SUB16_OPERANDS:
+		ldi		XL, low(OperandC)	; Load address of OperandC
+		ldi		XH, high(OperandC)
+		ldi		YL, low(OperandD)	; Load address of OperandD
+		ldi		YH, high(OperandD)
+		ldi		ZL, low(SUB16_OP1)	; Destination for operand 1
+		ldi		ZH, high(SUB16_OP1)
+
+		ld		R16, X+				; Load first byte of OperandC
+		st		Z+, R16
+		ld		R16, X				; Load second byte of OperandC
+		st		Z, R16
+
+		ldi		ZL, low(SUB16_OP2)	; Destination for operand 2
+		ldi		ZH, high(SUB16_OP2)
+
+		ld		R16, Y+				; Load first byte of OperandD
+		st		Z+, R16
+		ld		R16, Y				; Load second byte of OperandD
+		st		Z, R16
+
+		ret
+
+
 ;-----------------------------------------------------------
 ; Func: ADD16
 ; Desc: Adds two 16-bit numbers and generates a 24-bit number
@@ -114,9 +176,9 @@ ADD16:
 		ld R17, Y
 		adc R17, R16;add upper bytes
 		st Z+, R17 ; store upper bytes
-		brcc EXIT
+		brcc EXITadd
 		st Z, XH
-		EXIT
+		EXITadd:
 		ret						; End a function with RET
 
 ;-----------------------------------------------------------
@@ -146,9 +208,9 @@ SUB16:
 		ld R17, Y
 		sbc R17, R16;add upper bytes
 		st Z+, R17
-		brcc EXIT
+		brcc EXITsub
 		st Z, XH
-		EXIT 
+		EXITsub:
 		ret						; End a function with RET
 
 ;-----------------------------------------------------------
