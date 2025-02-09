@@ -99,6 +99,7 @@ DONE:	rjmp	DONE			; Create an infinite while loop to signify the
 ; Desc: Loads the operands for ADD16 into memory
 ;-----------------------------------------------------------
 LOAD_ADD16_OPERANDS:
+		push r0
 		
 		ldi		ZL, low(OperandA * 2)	; only the Z-register can access program memory
 		ldi		ZH, high(OperandA * 2)
@@ -124,6 +125,8 @@ LOAD_ADD16_OPERANDS:
 		lpm							; load program memory pointed to by Z into r0
 		st		Y, r0
 
+		pop r0
+
 		ret
 
 ;-----------------------------------------------------------
@@ -131,6 +134,8 @@ LOAD_ADD16_OPERANDS:
 ; Desc: Loads the operands for SUB16 into memory
 ;-----------------------------------------------------------
 LOAD_SUB16_OPERANDS:
+		push r0
+
 		ldi		ZL, low(OperandC * 2)	; only the Z-register can access program memory
 		ldi		ZH, high(OperandC * 2)
 
@@ -155,8 +160,52 @@ LOAD_SUB16_OPERANDS:
 		lpm							; load program memory pointed to by Z into r0
 		st		Y, r0
 
+		pop r0
+
 		ret
 
+LOAD_MUL24_OPERANDS:
+		push r0
+		
+		ldi		ZL, low(OperandE1 * 2)	; only the Z-register can access program memory
+		ldi		ZH, high(OperandE1 * 2)
+
+		ldi		YL, low(MUL24_OP1)	; Destination for operand 1
+		ldi		YH, high(MUL24_OP1)
+
+		lpm							; load program memory pointed to by Z into r0
+		st		Y+, r0
+		adiw	ZH:ZL, 1
+		lpm							; load program memory pointed to by Z into r0
+		st		Y+, r0
+
+		ldi		ZL, low(OperandE2 * 2)	; only the Z-register can access program memory
+		ldi		ZH, high(OperandE2 * 2)
+
+		lpm							; load program memory pointed to by Z into r0
+		st		Y, r0
+
+		ldi		ZL, low(OperandF1 * 2)	; only the Z-register can access program memory
+		ldi		ZH, high(OperandF1 * 2)
+
+		ldi		YL, low(MUL24_OP2)	; Destination for operand 2
+		ldi		YH, high(MUL24_OP2)
+
+		lpm							; load program memory pointed to by Z into r0
+		st		Y+, r0
+		adiw	ZH:ZL, 1
+		lpm							; load program memory pointed to by Z into r0
+		st		Y+, r0
+
+		ldi		ZL, low(OperandF2 * 2)	; only the Z-register can access program memory
+		ldi		ZH, high(OperandF2 * 2)
+
+		lpm							; load program memory pointed to by Z into r0
+		st		Y, r0
+
+		pop r0
+
+		ret
 
 ;-----------------------------------------------------------
 ; Func: ADD16
@@ -165,6 +214,9 @@ LOAD_SUB16_OPERANDS:
 ;       out bit.
 ;-----------------------------------------------------------
 ADD16:
+		push mpr
+		push mpr2
+
 		; Load beginning address of first operand into X
 		ldi		XL, low(ADD16_OP1)	; Load low byte of address
 		ldi		XH, high(ADD16_OP1)	; Load high byte of address
@@ -189,6 +241,10 @@ ADD16:
 		brcc EXITadd
 		st Z, XH
 		EXITadd:
+
+		pop mpr2
+		pop mpr
+
 		ret						; End a function with RET
 
 ;-----------------------------------------------------------
@@ -197,6 +253,9 @@ ADD16:
 ;       result. Always subtracts from the bigger values.
 ;-----------------------------------------------------------
 SUB16:
+		push mpr
+		push mpr2
+
 		; Load beginning address of first operand into X
 		ldi		XL, low(SUB16_OP1)	; Load low byte of address
 		ldi		XH, high(SUB16_OP1)	; Load high byte of address
@@ -221,6 +280,10 @@ SUB16:
 		brcc EXITsub
 		st Z, XH
 		EXITsub:
+
+		pop mpr2
+		pop mpr
+
 		ret						; End a function with RET
 
 ;-----------------------------------------------------------
@@ -423,15 +486,15 @@ SUB16_Result:
         .byte 2   ; Allocate two bytes for the SUB16 result
 
 ; data memory allocation for MUL24
-;.org    $0150
-;MUL24_OP1:
-        ;.byte 
-;MUL24_OP2:
-        ;.byte 
+.org    $0150
+MUL24_OP1:
+        .byte 3
+MUL24_OP2:
+        .byte 3
 
-;.org    $0160
-;MUL24_Result:
-        ;.byte 6   
+.org    $0160
+MUL24_Result:
+        .byte 6   
 
 ;***********************************************************
 ;*	Additional Program Includes
