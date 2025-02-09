@@ -98,25 +98,30 @@ DONE:	rjmp	DONE			; Create an infinite while loop to signify the
 ; Desc: Loads the operands for ADD16 into memory
 ;-----------------------------------------------------------
 LOAD_ADD16_OPERANDS:
-		ldi		XL, low(OperandA)	; Load address of OperandA
-		ldi		XH, high(OperandA)
-		ldi		YL, low(OperandB)	; Load address of OperandB
-		ldi		YH, high(OperandB)
-		ldi		ZL, low(ADD16_OP1)	; Destination for operand 1
-		ldi		ZH, high(ADD16_OP1)
+		
+		ldi		ZL, low(OperandA * 2)	; only the Z-register can access program memory
+		ldi		ZH, high(OperandA * 2)
 
-		ld		R16, X+				; Load first byte of OperandA
-		st		Z+, R16
-		ld		R16, X				; Load second byte of OperandA
-		st		Z, R16
+		ldi		YL, low(ADD16_OP1)	; Destination for operand 1
+		ldi		YH, high(ADD16_OP1)
 
-		ldi		ZL, low(ADD16_OP2)	; Destination for operand 2
-		ldi		ZH, high(ADD16_OP2)
+		lpm							; load program memory pointed to by Z into r0
+		st		Y+, r0
+		adiw	ZH:ZL, 1
+		lpm							; load program memory pointed to by Z into r0
+		st		Y, r0
 
-		ld		R16, Y+				; Load first byte of OperandB
-		st		Z+, R16
-		ld		R16, Y				; Load second byte of OperandB
-		st		Z, R16
+		ldi		ZL, low(OperandB * 2)	; only the Z-register can access program memory
+		ldi		ZH, high(OperandB * 2)
+
+		ldi		YL, low(ADD16_OP2)	; Destination for operand 2
+		ldi		YH, high(ADD16_OP2)
+
+		lpm							; load program memory pointed to by Z into r0
+		st		Y+, r0
+		adiw	ZH:ZL, 1
+		lpm							; load program memory pointed to by Z into r0
+		st		Y, r0
 
 		ret
 
@@ -125,25 +130,29 @@ LOAD_ADD16_OPERANDS:
 ; Desc: Loads the operands for SUB16 into memory
 ;-----------------------------------------------------------
 LOAD_SUB16_OPERANDS:
-		ldi		XL, low(OperandC)	; Load address of OperandC
-		ldi		XH, high(OperandC)
-		ldi		YL, low(OperandD)	; Load address of OperandD
-		ldi		YH, high(OperandD)
-		ldi		ZL, low(SUB16_OP1)	; Destination for operand 1
-		ldi		ZH, high(SUB16_OP1)
+		ldi		ZL, low(OperandC * 2)	; only the Z-register can access program memory
+		ldi		ZH, high(OperandC * 2)
 
-		ld		R16, X+				; Load first byte of OperandC
-		st		Z+, R16
-		ld		R16, X				; Load second byte of OperandC
-		st		Z, R16
+		ldi		YL, low(SUB16_OP1)	; Destination for operand 1
+		ldi		YH, high(SUB16_OP1)
 
-		ldi		ZL, low(SUB16_OP2)	; Destination for operand 2
-		ldi		ZH, high(SUB16_OP2)
+		lpm							; load program memory pointed to by Z into r0
+		st		Y+, r0
+		adiw	ZH:ZL, 1
+		lpm							; load program memory pointed to by Z into r0
+		st		Y, r0
 
-		ld		R16, Y+				; Load first byte of OperandD
-		st		Z+, R16
-		ld		R16, Y				; Load second byte of OperandD
-		st		Z, R16
+		ldi		ZL, low(OperandD * 2)	; only the Z-register can access program memory
+		ldi		ZH, high(OperandD * 2)
+
+		ldi		YL, low(SUB16_OP2)	; Destination for operand 2
+		ldi		YH, high(SUB16_OP2)
+
+		lpm							; load program memory pointed to by Z into r0
+		st		Y+, r0
+		adiw	ZH:ZL, 1
+		lpm							; load program memory pointed to by Z into r0
+		st		Y, r0
 
 		ret
 

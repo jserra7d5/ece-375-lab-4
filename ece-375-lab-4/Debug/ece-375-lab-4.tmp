@@ -1,0 +1,61 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.7</VERSION>
+ <DEVICE>"ATmega128"</DEVICE>
+ <WORKING_DIR>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc\m128def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\Debug\ece-375-lab-4.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>ece-375-lab-4.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>ece-375-lab-4.map</FILE>
+  <FILE>ece-375-lab-4.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <INIT><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>41</LINE></INIT>
+  <MAIN><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>58</LINE></MAIN>
+  <LOAD_ADD16_OPERANDS><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>100</LINE></LOAD_ADD16_OPERANDS>
+  <ADD16><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>162</LINE></ADD16>
+  <DONE><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>88</LINE></DONE>
+  <OperandA><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>358</LINE></OperandA>
+  <ADD16_OP1><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>399</LINE></ADD16_OP1>
+  <OperandB><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>360</LINE></OperandB>
+  <ADD16_OP2><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>401</LINE></ADD16_OP2>
+  <LOAD_SUB16_OPERANDS><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>132</LINE></LOAD_SUB16_OPERANDS>
+  <OperandC><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>364</LINE></OperandC>
+  <OperandD><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>366</LINE></OperandD>
+  <SUB16_OP1><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>411</LINE></SUB16_OP1>
+  <SUB16_OP2><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>413</LINE></SUB16_OP2>
+  <ADD16_Result><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>405</LINE></ADD16_Result>
+  <EXITadd><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>186</LINE></EXITadd>
+  <SUB16><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>194</LINE></SUB16>
+  <SUB16_Result><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>417</LINE></SUB16_Result>
+  <EXITsub><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>218</LINE></EXITsub>
+  <MUL24><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>226</LINE></MUL24>
+  <COMPOUND><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>243</LINE></COMPOUND>
+  <MUL16><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>266</LINE></MUL16>
+  <addrB><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>393</LINE></addrB>
+  <LAddrP><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>394</LINE></LAddrP>
+  <MUL16_OLOOP><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>293</LINE></MUL16_OLOOP>
+  <addrA><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>392</LINE></addrA>
+  <MUL16_ILOOP><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>300</LINE></MUL16_ILOOP>
+  <FUNC><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>344</LINE></FUNC>
+  <OperandE1><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>370</LINE></OperandE1>
+  <OperandE2><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>372</LINE></OperandE2>
+  <OperandF1><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>374</LINE></OperandF1>
+  <OperandF2><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>376</LINE></OperandF2>
+  <OperandG><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>380</LINE></OperandG>
+  <OperandH><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>382</LINE></OperandH>
+  <OperandI><FILE>C:\Users\redst\Desktop\Classes\ECE 375\ece-375-lab-4\ece-375-lab-4\main.asm</FILE><LINE>384</LINE></OperandI>
+ </LABELS>
+</ASSEMBLER_INFO>
