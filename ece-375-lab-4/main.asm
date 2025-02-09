@@ -77,13 +77,13 @@ MAIN:							; The Main program
 		rcall LOAD_MUL24_OPERANDS; Call function to load MUL24 operands
 		nop ; Check load MUL24 operands (Set Break point here #5)
 
-		; Call MUL24 function to display its results (calculate FFFFFF * FFFFFF)
+		rcall MUL24 ; Call MUL24 function to display its results (calculate FFFFFF * FFFFFF)
 		nop ; Check MUL24 result (Set Break point here #6)
 
-		; Setup the COMPOUND function direct test
+		rcall COMPOUND_SETUP ; Setup the COMPOUND function direct test
 		nop ; Check load COMPOUND operands (Set Break point here #7)
 
-		; Call the COMPOUND function
+		rcall COMPOUND ; Call the COMPOUND function
 		nop ; Check COMPOUND result (Set Break point here #8)
 
 DONE:	rjmp	DONE			; Create an infinite while loop to signify the
@@ -207,6 +207,81 @@ LOAD_MUL24_OPERANDS:
 
 		ret
 
+COMPOUND_SETUP:
+		; Setup SUB16 with operands G and H
+		ldi		ZL, low(OperandG * 2)
+		ldi		ZH, high(OperandG * 2)
+
+		ldi		YL, low(SUB16_OP1)	; Destination for operand 1
+		ldi		YH, high(SUB16_OP1)
+
+		lpm							; load program memory pointed to by Z into r0
+		st		Y+, r0
+		adiw	ZH:ZL, 1
+		lpm							; load program memory pointed to by Z into r0
+		st		Y, r0
+
+		ldi		ZL, low(OperandH * 2)	; only the Z-register can access program memory
+		ldi		ZH, high(OperandH * 2)
+
+		ldi		YL, low(SUB16_OP2)	; Destination for operand 2
+		ldi		YH, high(SUB16_OP2)
+
+		lpm							; load program memory pointed to by Z into r0
+		st		Y+, r0
+		adiw	ZH:ZL, 1
+		lpm							; load program memory pointed to by Z into r0
+		st		Y, r0
+		; Perform subtraction to calculate G - H
+		rcall SUB16
+
+		; Setup the ADD16 function with SUB16 result and operand I
+		ldi		ZL, low(OperandI * 2)	; only the Z-register can access program memory
+		ldi		ZH, high(OperandI * 2)
+
+		ldi		YL, low(ADD16_OP1)	; Destination for operand 1
+		ldi		YH, high(ADD16_OP1)
+
+		lpm							; load program memory pointed to by Z into r0
+		st		Y+, r0
+		adiw	ZH:ZL, 1
+		lpm							; load program memory pointed to by Z into r0
+		st		Y, r0
+
+		ldi		XL, low(SUB16_Result)
+		ldi		XH, high(SUB16_Result)
+
+		ldi		YL, low(ADD16_OP2)	; Destination for operand 2
+		ldi		YH, high(ADD16_OP2)
+
+		ld		mpr, X+							
+		st		Y+, mpr
+		ld		mpr, X
+		st		Y, mpr
+
+		; Perform addition next to calculate (G - H) + I
+		rcall ADD16
+
+		; Setup the MUL24 function with ADD16 result as both operands
+
+		ldi		XL, low(ADD16_Result)
+		ldi		XH, high(ADD16_Result)
+
+		ldi		YL, low(MUL24_OP1)	; Destination for operand 1
+		ldi		YH, high(MUL24_OP1)
+
+		ldi		ZL, low(MUL24_OP2)	; Destination for operand 1
+		ldi		ZH, high(MUL24_OP2)
+
+		ld		mpr, X+
+		st		Y+, mpr
+		st		Z+, mpr
+		ld		mpr, X+
+		st		Y+, mpr
+		st		Z+, mpr
+		ld		mpr, X
+		st		Y, mpr
+		st		Z, mpr
 ;-----------------------------------------------------------
 ; Func: ADD16
 ; Desc: Adds two 16-bit numbers and generates a 24-bit number
@@ -309,83 +384,9 @@ MUL24:
 ;       All result bytes should be cleared before beginning.
 ;-----------------------------------------------------------
 COMPOUND:
-
-		; Setup SUB16 with operands G and H
-		ldi		ZL, low(OperandG * 2)
-		ldi		ZH, high(OperandG * 2)
-
-		ldi		YL, low(SUB16_OP1)	; Destination for operand 1
-		ldi		YH, high(SUB16_OP1)
-
-		lpm							; load program memory pointed to by Z into r0
-		st		Y+, r0
-		adiw	ZH:ZL, 1
-		lpm							; load program memory pointed to by Z into r0
-		st		Y, r0
-
-		ldi		ZL, low(OperandH * 2)	; only the Z-register can access program memory
-		ldi		ZH, high(OperandH * 2)
-
-		ldi		YL, low(SUB16_OP2)	; Destination for operand 2
-		ldi		YH, high(SUB16_OP2)
-
-		lpm							; load program memory pointed to by Z into r0
-		st		Y+, r0
-		adiw	ZH:ZL, 1
-		lpm							; load program memory pointed to by Z into r0
-		st		Y, r0
-		; Perform subtraction to calculate G - H
-		rcall SUB16
-
-		; Setup the ADD16 function with SUB16 result and operand I
-		ldi		ZL, low(OperandI * 2)	; only the Z-register can access program memory
-		ldi		ZH, high(OperandI * 2)
-
-		ldi		YL, low(ADD16_OP1)	; Destination for operand 1
-		ldi		YH, high(ADD16_OP1)
-
-		lpm							; load program memory pointed to by Z into r0
-		st		Y+, r0
-		adiw	ZH:ZL, 1
-		lpm							; load program memory pointed to by Z into r0
-		st		Y, r0
-
-		ldi		XL, low(SUB16_Result)
-		ldi		XH, high(SUB16_Result)
-
-		ldi		YL, low(ADD16_OP2)	; Destination for operand 2
-		ldi		YH, high(ADD16_OP2)
-
-		ld		mpr, X+							
-		st		Y+, mpr
-		ld		mpr, X
-		st		Y, mpr
-
-		; Perform addition next to calculate (G - H) + I
-		rcall ADD16
-
-		; Setup the MUL24 function with ADD16 result as both operands
-
-		ldi		XL, low(ADD16_Result)
-		ldi		XH, high(ADD16_Result)
-
-		ldi		YL, low(MUL24_OP1)	; Destination for operand 1
-		ldi		YH, high(MUL24_OP1)
-
-		ldi		ZL, low(MUL24_OP2)	; Destination for operand 1
-		ldi		ZH, high(MUL24_OP2)
-
-		ld		mpr, X+
-		st		Y+, mpr
-		st		Z+, mpr
-		ld		mpr, X+
-		st		Y+, mpr
-		st		Z+, mpr
-		ld		mpr, X
-		st		Y, mpr
-		st		Z, mpr
+		; load everything, perform subtraction and addition, ready for 24-bit multiplication
 		; Perform multiplication to calculate ((G - H) + I)^2
-
+		rcall MUL24
 		ret						; End a function with RET
 
 ;-----------------------------------------------------------
@@ -561,19 +562,6 @@ MUL24_OP2:
 
 .org    $0160
 MUL24_Result:
-        .byte 6   
-
-; data memory allocation for COMPOUND
-.org    $0170
-COMPOUND_OP1:
-        .byte 2
-COMPOUND_OP2:
-        .byte 2
-COMPOUND_OP3:
-        .byte 2
-
-.org    $0180
-COMPOUND_Result:
         .byte 6   
 
 ;***********************************************************
