@@ -12,6 +12,7 @@
 ;*	Internal Register Definitions and Constants
 ;***********************************************************
 .def	mpr = r16				; Multipurpose register
+.def	mpr2 = r19				; Second multipurpose register
 .def	rlo = r0				; Low byte of MUL result
 .def	rhi = r1				; High byte of MUL result
 .def	zero = r2				; Zero register, set to zero in INIT, useful for calculations
@@ -66,10 +67,10 @@ MAIN:							; The Main program
 		nop ; Check ADD16 result (Set Break point here #2)
 
 
-		; Call function to load SUB16 operands
+		rcall LOAD_SUB16_OPERANDS	; Call function to load SUB16 operands
 		nop ; Check load SUB16 operands (Set Break point here #3)
 
-		; Call SUB16 function to display its results (calculate FCB9 - E420)
+		rcall SUB16	; Call SUB16 function to display its results (calculate FCB9 - E420)
 		nop ; Check SUB16 result (Set Break point here #4)
 
 
@@ -177,14 +178,14 @@ ADD16:
 		ldi     ZH, high(ADD16_Result)
 
 		; Execute the function
-		ld R16, X+
-		ld R17, Y+
-		add R17, R16 ; add lower bytes
-		st Z+, R17 ; stores lower
-		ld R16, X
-		ld R17, Y
-		adc R17, R16;add upper bytes
-		st Z+, R17 ; store upper bytes
+		ld mpr, X+
+		ld mpr2, Y+
+		add mpr2, mpr ; add lower bytes
+		st Z+, mpr2 ; stores lower
+		ld mpr, X
+		ld mpr2, Y
+		adc mpr2, mpr;add upper bytes
+		st Z+, mpr2 ; store upper bytes
 		brcc EXITadd
 		st Z, XH
 		EXITadd:
@@ -209,14 +210,14 @@ SUB16:
 		ldi     ZH, high(SUB16_Result)
 
 		; Execute the function
-		ld R16, X+
-		ld R17, Y+
-		sub R17, R16 ;lower
-		st Z+, R17 ;stores lower
-		ld R16, X
-		ld R17, Y
-		sbc R17, R16;add upper bytes
-		st Z+, R17
+		ld mpr, X+
+		ld mpr2, Y+
+		sub mpr2, mpr ;lower
+		st Z+, mpr2 ;stores lower
+		ld mpr, X
+		ld mpr2, Y
+		sbc mpr2, mpr;add upper bytes
+		st Z+, mpr2
 		brcc EXITsub
 		st Z, XH
 		EXITsub:
