@@ -78,7 +78,8 @@ MAIN:							; The Main program
 		nop ; Check load MUL24 operands (Set Break point here #5)
 
 		rcall MUL24 ; Call MUL24 function to display its results (calculate FFFFFF * FFFFFF)
-		nop ; Check MUL24 result (Set Break point here #6)
+
+ 		nop ; Check MUL24 result (Set Break point here #6)
 
 		rcall COMPOUND_SETUP ; Setup the COMPOUND function direct test
 		nop ; Check load COMPOUND operands (Set Break point here #7)
@@ -369,7 +370,41 @@ SUB16:
 MUL24:
 ;* - Simply adopting MUL16 ideas to MUL24 will not give you steady results. You should come up with different ideas.
 		; Execute the function here
+		clr		zero
 
+		ldi		XL, low(MUL24_OP1)
+		ldi		XH, high(MUL24_OP1)
+
+		ldi		YL, low(MUL24_OP2)
+		ldi		YH, high(MUL24_OP2)
+
+		ldi		ZL, low(MUL24_Result)
+		ldi		ZH, high(MUL24_Result)
+
+		ldi		oloop, 3
+		MUL24_OLOOP:
+		ldi		iloop, 3
+		MUL24_ILOOP:
+		ld		A , X+
+		ld		B, Y
+		mul		A, B
+		ld		A, Z+
+		ld		B, Z+
+		add		rlo, A
+		adc		rhi, B
+		ld		A, Z
+		adc		A, zero
+		st		Z, A
+		st		-Z, rhi
+		st		-Z, rlo
+		adiw	Z, 1
+		dec		iloop
+		brne	MUL24_ILOOP
+		; inner loop ends
+		sbiw	Z, 1
+		adiw	Y, 1
+		dec		oloop
+		brne	MUL24_OLOOP
 
 		ret						; End a function with RET
 
