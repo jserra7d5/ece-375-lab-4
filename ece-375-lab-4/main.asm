@@ -293,6 +293,8 @@ ADD16:
     push    mpr
     push    mpr2
 
+	clr zero
+
     ldi     XL, low(ADD16_OP1)
     ldi     XH, high(ADD16_OP1)
 
@@ -301,6 +303,13 @@ ADD16:
 
     ldi     ZL, low(ADD16_Result)
     ldi     ZH, high(ADD16_Result)
+
+	ldi     mpr, 3
+	CLR_RESULT_ADD:
+	st      Z+, zero
+	dec     mpr
+	brne    CLR_RESULT_ADD
+	sbiw	Z, 3
 
     ld      mpr,  X+
     ld      mpr2, Y+
@@ -313,7 +322,7 @@ ADD16:
     st      Z+,   mpr2
 
     brcc    EXITadd
-    st		X, XH
+    st		Z, XH
 
 EXITadd:
     pop     mpr2
