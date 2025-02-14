@@ -370,6 +370,20 @@ SUB16:
 MUL24:
 ;* - Simply adopting MUL16 ideas to MUL24 will not give you steady results. You should come up with different ideas.
 		; Execute the function here
+		push 	A				; Save A register
+		push	B				; Save B register
+		push	rhi				; Save rhi register
+		push	rlo				; Save rlo register
+		push	zero			; Save zero register
+		push	XH				; Save X-ptr
+		push	XL
+		push	YH				; Save Y-ptr
+		push	YL
+		push	ZH				; Save Z-ptr
+		push	ZL
+		push	oloop			; Save counters
+		push	iloop
+
 		clr		zero
 
 		ldi		XL, low(MUL24_OP1)
@@ -409,6 +423,20 @@ MUL24:
 		adiw	Y, 1	; increment our operand 2 
 		dec		oloop
 		brne	MUL24_OLOOP
+
+		pop		iloop			; Restore all registers in reverves order
+		pop		oloop
+		pop		ZL
+		pop		ZH
+		pop		YL
+		pop		YH
+		pop		XL
+		pop		XH
+		pop		zero
+		pop		rlo
+		pop		rhi
+		pop		B
+		pop		A
 
 		ret						; End a function with RET
 
