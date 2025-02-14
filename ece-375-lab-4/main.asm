@@ -290,38 +290,37 @@ COMPOUND_SETUP:
 ;       out bit.
 ;-----------------------------------------------------------
 ADD16:
-		push mpr
-		push mpr2
+    push    mpr
+    push    mpr2
 
-		; Load beginning address of first operand into X
-		ldi		XL, low(ADD16_OP1)	; Load low byte of address
-		ldi		XH, high(ADD16_OP1)	; Load high byte of address
+    ldi     XL, low(ADD16_OP1)
+    ldi     XH, high(ADD16_OP1)
 
-		; Load beginning address of second operand into Y
-		ldi     YL, low(ADD16_OP2)
-		ldi     YH, high(ADD16_OP2)
+    ldi     YL, low(ADD16_OP2)
+    ldi     YH, high(ADD16_OP2)
 
-		; Load beginning address of result into Z
-		ldi     ZL, low(ADD16_Result)
-		ldi     ZH, high(ADD16_Result)
+    ldi     ZL, low(ADD16_Result)
+    ldi     ZH, high(ADD16_Result)
 
-		; Execute the function
-		ld mpr, X+
-		ld mpr2, Y+
-		add mpr2, mpr ; add lower bytes
-		st Z+, mpr2 ; stores lower
-		ld mpr, X
-		ld mpr2, Y
-		adc mpr2, mpr;add upper bytes
-		st Z+, mpr2 ; store upper bytes
-		brcc EXITadd
-		st Z, XH
-		EXITadd:
+    ld      mpr,  X+
+    ld      mpr2, Y+
+    add     mpr2, mpr
+    st      Z+,   mpr2
 
-		pop mpr2
-		pop mpr
+    ld      mpr,  X
+    ld      mpr2, Y
+    adc     mpr2, mpr
+    st      Z+,   mpr2
 
-		ret						; End a function with RET
+    brcc    EXITadd
+    st		X, XH
+
+EXITadd:
+    pop     mpr2
+    pop     mpr
+    ret
+
+
 
 ;-----------------------------------------------------------
 ; Func: SUB16
@@ -329,38 +328,48 @@ ADD16:
 ;       result. Always subtracts from the bigger values.
 ;-----------------------------------------------------------
 SUB16:
-		push mpr
-		push mpr2
+    push    mpr
+    push    mpr2
 
-		; Load beginning address of first operand into X
-		ldi		XL, low(SUB16_OP1)	; Load low byte of address
-		ldi		XH, high(SUB16_OP1)	; Load high byte of address
+    ; Load pointer to OP1 into X
+    ldi     XL, low(SUB16_OP1)
+    ldi     XH, high(SUB16_OP1)
 
-		; Load beginning address of second operand into Y
-		ldi     YL, low(SUB16_OP2)
-		ldi     YH, high(SUB16_OP2)
+    ; Load pointer to OP2 into Y
+    ldi     YL, low(SUB16_OP2)
+    ldi     YH, high(SUB16_OP2)
 
-		; Load beginning address of result into Z
-		ldi     ZL, low(SUB16_Result)
-		ldi     ZH, high(SUB16_Result)
+    ; Load pointer to SUB16_Result into Z
+    ldi     ZL, low(SUB16_Result)
+    ldi     ZH, high(SUB16_Result)
 
-		; Execute the function
-		ld mpr, X+
-		ld mpr2, Y+
-		sub mpr2, mpr ;lower
-		st Z+, mpr2 ;stores lower
-		ld mpr, X
-		ld mpr2, Y
-		sbc mpr2, mpr;add upper bytes
-		st Z+, mpr2
-		brcc EXITsub
-		st Z, XH
-		EXITsub:
+    ; --- Subtract lower bytes (OP1 low - OP2 low) ---
+    ld      mpr,  X+     ; mpr  = OP1.low
+    ld      mpr2, Y+     ; mpr2 = OP2.low
 
-		pop mpr2
-		pop mpr
+    ; Now do mpr = OP1.low - OP2.low
+    sub     mpr, mpr2    ; mpr = mpr - mpr2  => OP1.low - OP2.low
+    st      Z+, mpr      ; Store low byte of result
 
-		ret						; End a function with RET
+    ; --- Subtract higher bytes (with borrow) ---
+    ld      mpr,  X      ; mpr  = OP1.high
+    ld      mpr2, Y      ; mpr2 = OP2.high
+
+    ; mpr = OP1.high - OP2.high - borrow
+    sbc     mpr, mpr2
+    st      Z+, mpr      ; Store high byte of result
+
+    ; Optional: if you want to detect borrow-out (carry clear):
+    brcc    EXITsub
+    ; If carry is clear => borrowed
+    ; For instance, store a sign or do something special:
+    ; st Z, XH   ; (Sample action from your snippet)
+
+EXITsub:
+    pop     mpr2
+    pop     mpr
+    ret
+
 
 ;-----------------------------------------------------------
 ; Func: MUL24
@@ -394,6 +403,15 @@ MUL24:
 
 		ldi		ZL, low(MUL24_Result)
 		ldi		ZH, high(MUL24_Result)
+
+		ldi     mpr, 6
+		CLR_RESULT:
+		st      Z+, zero
+		dec     mpr
+		brne    CLR_RESULT
+
+		; Reset Z pointer
+		sbiw    ZL, 6
 
 		ldi		oloop, 3
 		MUL24_OLOOP:
@@ -579,7 +597,7 @@ OperandF1:
 OperandF2:
 	.DW	0X00FF
 
-; Compound operands
+; Compound operands ((G - H) + I)^2
 OperandG:
 	.DW	0xFCBA				; test value for operand G
 OperandH:
