@@ -392,17 +392,21 @@ MUL24:
 		ld		B, Z+
 		add		rlo, A
 		adc		rhi, B
-		ld		A, Z
+		ld		A, Z+
 		adc		A, zero
-		st		Z, A
+		ld		B, Z
+		adc		B, zero
+		st		Z, B                            
+		st		-Z, A
 		st		-Z, rhi
 		st		-Z, rlo
 		adiw	Z, 1
 		dec		iloop
 		brne	MUL24_ILOOP
 		; inner loop ends
-		sbiw	Z, 1
-		adiw	Y, 1
+		sbiw	Z, 2	
+		sbiw	X, 3	; set X back at the start of operand 1
+		adiw	Y, 1	; increment our operand 2 
 		dec		oloop
 		brne	MUL24_OLOOP
 
@@ -547,7 +551,7 @@ OperandF1:
 OperandF2:
 	.DW	0X00FF
 
-; Compoud operands
+; Compound operands
 OperandG:
 	.DW	0xFCBA				; test value for operand G
 OperandH:
